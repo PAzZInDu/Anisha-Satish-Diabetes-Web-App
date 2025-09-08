@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import pickle
 
-# Questionnare
+# Class list as tuples
 Age = ('Less then 11', 'Less then 15', 'Less then 5', 'greater then 15')
 Sex = ('Female', 'Male')
 Area_of_Residence  = ('Rural', 'Suburban', 'Urban')
