@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
 import pickle
 
@@ -14,26 +13,25 @@ Standardized_growth_rate_infancy = ('Highest quartiles', 'Lowest quartiles', 'Mi
 Standardized_birth_weight = ('Highest quartiles', 'Lowest quartiles', 'Middle quartiles', 'unkhown')
 Autoantibodies = ('No', 'Yes')
 Impaired_glucose_metabolism  = ('No', 'Yes')
-Insulin_taken = ('No', 'Yes')
-How_Taken = ('Injection', 'No')
 Family_History_affected_Type_1_Diabetes = ('No', 'Yes')
 Family_History_affected_type_2_Diabetes = ('No', 'Yes')
 Hypoglycemis = ('No', 'Yes')
 pancreatic_disease_affected_child  = ('No', 'Yes')
 
 
-#MODEL_NAME = "age_detector_model"
+MODEL_NAME = "randomforest_model"
+OH_ENCODER = "onehotencoder"
 
-# @st.cache_resource
-# def load_model(model_name):
-#     with open(model_name, "rb") as file_name:
-#         return pickle.load(file_name)
+@st.cache_resource
+def load_model(model_name):
+    with open(model_name, "rb") as file_name:
+        return pickle.load(file_name)
 
 
 #load the model
-#tabular_model = load_model(MODEL_NAME)
+tabular_model = load_model(MODEL_NAME)
+one_hot_encoder = load_model(OH_ENCODER)
 
-#creating the web app
 
 #title
 st.title("Diabetic Prediction")
@@ -41,7 +39,7 @@ st.title("Diabetic Prediction")
 #dashboard
 st.subheader("User Dashboard")
 
-# User Input
+# User Interface
 age = st.selectbox(
     'Choose Age Category:',
     Age,
@@ -102,17 +100,13 @@ glucose_metabolism = st.selectbox(
     index=None
 )
 
-insulin_taken = st.selectbox(
-    "Insulin Taken:",
-    Insulin_taken,
-    index=None
-)
+# Remove Column---
+insulin_taken = 'No'
 
-how_taken = st.selectbox(
-    "How Insulin Taken:",
-    How_Taken,
-    index=None
-)
+
+# Remove Column---
+how_taken = 'No'
+
 
 family_history_type1 = st.selectbox(
     "Family History of Type 1 Diabetes:",
@@ -138,6 +132,20 @@ pancreatic_disease = st.selectbox(
     index=None
 )
 
+# BMI-------
+height = st.number_input(
+    "Enter your height in cm",
+    value=None,
+    placeholder="Type a number..."
+)
+
+weight = st.number_input(
+    "Enter your weight in kg",
+    value=None,
+    placeholder="Type a number..."
+)
+
+bmi = 13.66
 
 user_inputs = [
     age,
@@ -158,6 +166,19 @@ user_inputs = [
     pancreatic_disease
 ]
 
+user_inputs_arr = np.array([user_inputs])
 
-# App
+st.button("Reset", type="primary")
+if st.button("Predict"):
+    ohe_inputs = one_hot_encoder.transform(user_inputs_arr)
+    ohe_inputs_new = np.delete(ohe_inputs, [16, 17], axis=1)
+    ohe_inputs_new_bmi = np.append(ohe_inputs_new, [[bmi]], axis=1)
+
+    prediction = tabular_model.predict(ohe_inputs_new_bmi)
+
+    if prediction == 0:
+        st.success('You are NOT classified as Diabetic', icon="✅")
+    else:
+        st.warning("You are classified as Diabetic. Please meet your doctor !!", icon="🚨")
+
 
