@@ -4,6 +4,10 @@ import pickle
 from functions import bmi_calculator
 
 
+if not st.user.is_logged_in:
+    st.error("Please log in to access the App")
+    st.stop()
+
 # -----------------------------
 # Class list as tuples
 # -----------------------------
