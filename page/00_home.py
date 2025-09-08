@@ -8,9 +8,7 @@ if not st.user.is_logged_in:
     st.error("Please log in to access the App")
     st.stop()
 
-# -----------------------------
-# Class list as tuples
-# -----------------------------
+
 Age = ('Less then 11', 'Less then 15', 'Less then 5', 'greater then 15')
 Sex = ('Female', 'Male')
 Area_of_Residence  = ('Rural', 'Suburban', 'Urban')
@@ -30,9 +28,7 @@ MODEL_NAME = "randomforest_model"
 OH_ENCODER = "onehotencoder"
 
 
-# -----------------------------
-# Load model + encoder
-# -----------------------------
+
 @st.cache_resource
 def load_model(model_name):
     with open(model_name, "rb") as file_name:
@@ -42,17 +38,13 @@ tabular_model = load_model(MODEL_NAME)
 one_hot_encoder = load_model(OH_ENCODER)
 
 
-# -----------------------------
-# Title & dashboard
-# -----------------------------
+
 st.title("Diabetic Prediction")
 st.subheader("User Dashboard")
 st.image("https://www.chenmed.com/sites/default/files/styles/blog_post_teaser/public/2023-09/Caring%20for%20Our%20Patients-%20Helping%20an%20Uncontrolled%20Diabetic%20Stay%20Out%20of%20the%20Hospital.jpg?itok=8JOkAalx")
 
 
-# -----------------------------
-# Inputs (stored in session_state automatically)
-# -----------------------------
+
 st.info("Please Enter the Following Details")
 st.selectbox('Choose Age Category:', Age, index=None, key="age")
 st.selectbox('Choose Gender:', Sex, index=None, key="gender")
@@ -78,9 +70,7 @@ st.number_input("Enter your height in cm", min_value=50, max_value=250, step=1, 
 st.number_input("Enter your weight in kg", min_value=10, max_value=200, step=1, key="weight")
 
 
-# -----------------------------
-# Buttons
-# -----------------------------
+
 if st.button("Predict"):
     required_fields = [
         "age", "gender", "residence", "hba1c", "nutrition",
@@ -130,8 +120,3 @@ if st.button("Predict"):
             st.success('✅ You are NOT classified as Diabetic')
         else:
             st.warning("🚨 You are classified as Diabetic. Please meet your doctor !!")
-
-if st.button("Reset", type="primary"):
-    for key in st.session_state.keys():
-        del st.session_state[key]
-    st.rerun()
