@@ -6,7 +6,7 @@ IMAGE_ADDRESS = "https://medlineplus.gov/images/Diabetes_share.jpg"
 
 
 if not st.user.is_logged_in:
-    st.title("Google Login App")
+    st.title("Diabetics Prediction")
     st.image(IMAGE_ADDRESS)
     if st.sidebar.button("Log in with Google", type="primary", icon=":material/login:"):
         st.login()
